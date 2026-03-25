@@ -1,7 +1,12 @@
 name: Build and Release
 
 on:
-  workflow_dispatch:  # Allows manual triggering
+  push:
+    branches:
+      - main  # 当代码推送到 main 分支时自动触发
+    paths-ignore:
+      - '**.md'  # 如果只是修改了 markdown 文档，就不触发打包
+  workflow_dispatch:  # 依然保留手动触发的按钮
 
 jobs:
   release:
@@ -15,6 +20,15 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
+      - name: Auto Generate Tag
+        run: |
+          # 使用 github.run_number 自动递增生成版本号，例如 v1.0.1, v1.0.2
+          TAG="v1.0.${{ github.run_number }}"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag $TAG
+          git push origin $TAG
 
       - name: Set up Go
         uses: actions/setup-go@v5

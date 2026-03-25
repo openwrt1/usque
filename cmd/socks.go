@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net"
 	"net/netip"
@@ -86,14 +87,26 @@ var socksCmd = &cobra.Command{
 
 		var endpoint *net.UDPAddr
 		if ipv6, err := cmd.Flags().GetBool("ipv6"); err == nil && !ipv6 {
-			endpoint = &net.UDPAddr{
-				IP:   net.ParseIP(config.AppConfig.EndpointV4),
-				Port: connectPort,
+			addrStr := config.AppConfig.EndpointV4
+			if _, _, err := net.SplitHostPort(addrStr); err != nil {
+				addrStr = net.JoinHostPort(addrStr, fmt.Sprintf("%d", connectPort))
+			}
+			var resolveErr error
+			endpoint, resolveErr = net.ResolveUDPAddr("udp", addrStr)
+			if resolveErr != nil {
+				cmd.Printf("Failed to resolve IPv4 endpoint: %v\n", resolveErr)
+				return
 			}
 		} else {
-			endpoint = &net.UDPAddr{
-				IP:   net.ParseIP(config.AppConfig.EndpointV6),
-				Port: connectPort,
+			addrStr := config.AppConfig.EndpointV6
+			if _, _, err := net.SplitHostPort(addrStr); err != nil {
+				addrStr = net.JoinHostPort(addrStr, fmt.Sprintf("%d", connectPort))
+			}
+			var resolveErr error
+			endpoint, resolveErr = net.ResolveUDPAddr("udp", addrStr)
+			if resolveErr != nil {
+				cmd.Printf("Failed to resolve IPv6 endpoint: %v\n", resolveErr)
+				return
 			}
 		}
 

@@ -174,3 +174,39 @@ func EnrollKey(accountData models.AccountData, pubKey []byte, deviceName string)
 
 	return accountData, nil, nil
 }
+
+// GetAccount retrieves the current account information, which typically includes traffic quota details.
+//
+// This function sends a GET request to fetch the latest state of the user's account.
+//
+// Parameters:
+//   - accountData: models.AccountData - The existing account data containing the ID and Token.
+//
+// Returns:
+//   - models.AccountData: The updated account data from the API.
+//   - error:              An error if the retrieval fails.
+func GetAccount(accountData models.AccountData) (models.AccountData, error) {
+	req, err := http.NewRequest("GET", internal.ApiUrl+"/"+internal.ApiVersion+"/reg/"+accountData.ID, nil)
+	if err != nil {
+		return models.AccountData{}, fmt.Errorf("failed to create request: %v", err)
+	}
+
+	for k, v := range internal.Headers {
+		req.Header.Set(k, v)
+	}
+	req.Header.Set("Authorization", "Bearer "+accountData.Token)
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return models.AccountData{}, fmt.Errorf("failed to send request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	var updatedAccount models.AccountData
+	if resp.StatusCode == http.StatusOK {
+		err = json.NewDecoder(resp.Body).Decode(&updatedAccount)
+	} else {
+		err = fmt.Errorf("failed to get account data: %s", resp.Status)
+	}
+	return updatedAccount, err
+}

@@ -1,3 +1,7 @@
+用命令  go run . socks -p 1080 -s update.microsoft.com -d 1.1.1.1 -t 10s 启动
+
+
+
 # usque
 
 🥚➡️🍏🍎
@@ -529,3 +533,7 @@ While the tool was made with security considerations in mind, I am not a securit
 **This tool is not affiliated with Cloudflare in any way. The tool was neither endorsed nor reviewed by Cloudflare. It is an independent research project. Cloudflare Warp, Warp+, 1.1.1.1™, Cloudflare Access™, Cloudflare Gateway™ and Cloudflare One™ [are all registered trademarks/wordmarks](https://www.cloudflare.com/trademark/) of Cloudflare, Inc. If you are a Cloudflare employee and you think this project is in any way harmful, please open an issue and I will do my best to contact you and resolve the issue.**
 
 WireGuard™ is a [registered trademark](https://www.wireguard.com/trademark-policy/) of Jason A. Donenfeld.
+
+
+
+

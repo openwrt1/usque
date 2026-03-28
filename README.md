@@ -1,4 +1,5 @@
 用命令  go run . socks -p 1080 -s update.microsoft.com -d 1.1.1.1 -t 10s 启动
+./usque socks -p 1080 -s update.microsoft.com -d 1.1.1.1 -t 10s
 
 
 

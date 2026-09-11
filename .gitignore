@@ -30,3 +30,4 @@ usque
 usque.exe
 dist/.vscode/
 .vscode/
+.DS_Store
